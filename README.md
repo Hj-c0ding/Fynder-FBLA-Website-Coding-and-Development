@@ -115,8 +115,6 @@ Fynder-FBLA-Website-Coding-and-Development/
 |   `-- wsgi.py
 |-- templates/
 |   `-- admin/
-`-- static/
-    `-- admin/
 ```
 
 ## Sources
