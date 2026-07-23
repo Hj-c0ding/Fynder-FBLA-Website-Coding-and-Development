@@ -1,0 +1,67 @@
+{% extends 'lostfound/base.html' %}
+
+{% block title %}Home | Fynder{% endblock %}
+
+{% block content %}
+<section class="hero p-4 p-md-5 rounded-4 mb-5">
+  <div class="row g-4 align-items-center">
+    <div class="col-lg-7">
+      <h1 class="display-5 mb-3">Reconnecting Students With Their Belongings</h1>
+      <p class="lead mb-4">Fynder helps students and staff report found items, browse items, and securely request returns through a guided process.</p>
+      <div class="d-flex gap-3 flex-wrap">
+        <a href="{% url 'report_item' %}" class="btn btn-primary btn-lg">Report an Item</a>
+        <a href="{% url 'found_items' %}" class="btn btn-outline-light btn-lg">Browse Items</a>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <div class="stats-grid">
+        <article class="stat-card" aria-label="Approved listings">
+          <h2>{{ approved_count }}</h2>
+          <p>Approved Item Listings</p>
+        </article>
+        <article class="stat-card" aria-label="Claimed items">
+          <h2>{{ claimed_count }}</h2>
+          <p>Items Returned</p>
+        </article>
+        <article class="stat-card" aria-label="Pending reviews">
+          <h2>{{ pending_count }}</h2>
+          <p>Pending Items For Review</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h3 mb-0">Recently Approved Items</h2>
+    <a class="btn btn-sm btn-outline-primary" href="{% url 'found_items' %}">View all items</a>
+  </div>
+
+  <div class="row g-4">
+    {% for item in recent_items %}
+      <div class="col-md-6 col-lg-4">
+        <article class="card h-100 shadow-sm item-card">
+          {% if item.image %}
+            <img src="{{ item.image.url }}" class="card-img-top" alt="Photo of {{ item.title }}">
+          {% else %}
+            <div class="card-img-top placeholder-img" aria-label="No photo available for {{ item.title }}">No photo</div>
+          {% endif %}
+          <div class="card-body">
+            <h3 class="h5 card-title">{{ item.title }}</h3>
+            <p class="card-text small text-body-secondary">{{ item.get_category_display }} | Found at {{ item.location_found }}</p>
+            <p class="card-text">{{ item.description|truncatechars:90 }}</p>
+          </div>
+          <div class="card-footer bg-transparent border-0 pb-3">
+            <a href="{% url 'item_detail' item.id %}" class="btn btn-outline-primary w-100">View details</a>
+          </div>
+        </article>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info">No approved listings yet. Check back soon.</div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

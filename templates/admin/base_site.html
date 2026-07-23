@@ -1,0 +1,82 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Admin Dashboard') }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  :root,
+  html[data-theme="light"] {
+    --primary: #3f2a6d;
+    --secondary: #5d3b8c;
+    --accent: #a67adf;
+    --primary-fg: #ffffff;
+
+    --header-bg: #3f2a6d;
+    --header-color: #ffffff;
+    --header-branding-color: #ffffff;
+    --header-link-color: #e8dcfb;
+
+    --breadcrumbs-bg: #5d3b8c;
+    --breadcrumbs-link-fg: #f7efff;
+    --breadcrumbs-fg: #ffffff;
+
+    --link-fg: #5d3b8c;
+    --link-hover-color: #3f2a6d;
+    --link-selected-fg: #7a4fb3;
+
+    --button-bg: #5d3b8c;
+    --button-hover-bg: #3f2a6d;
+    --default-button-bg: #3f2a6d;
+    --default-button-hover-bg: #2f1f4b;
+  }
+
+  html[data-theme="dark"] {
+    --primary: #8f6ad6;
+    --secondary: #6f4fa8;
+    --accent: #b58cff;
+    --primary-fg: #ffffff;
+
+    --header-bg: #241a33;
+    --header-color: #f4eefc;
+    --header-branding-color: #f4eefc;
+    --header-link-color: #d9c9fb;
+
+    --breadcrumbs-bg: #34264a;
+    --breadcrumbs-link-fg: #e8dcfb;
+    --breadcrumbs-fg: #f4eefc;
+
+    --link-fg: #d9c9fb;
+    --link-hover-color: #f4eefc;
+    --link-selected-fg: #b58cff;
+
+    --button-bg: #6f4fa8;
+    --button-hover-bg: #8f6ad6;
+    --default-button-bg: #8f6ad6;
+    --default-button-hover-bg: #b58cff;
+  }
+
+  #site-name .admin-brand-logo {
+    display: block;
+    block-size: clamp(3.35rem, 2.35vw + 2.5rem, 4.7rem);
+    inline-size: auto;
+    max-inline-size: clamp(16.75rem, 30vw, 25rem);
+    object-fit: contain;
+  }
+
+</style>
+{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+  <a href="{% url 'admin:index' %}">
+    <img src="{% static 'lostfound/img/Logo White Final.png' %}" alt="Fynder" class="admin-brand-logo" width="662" height="385">
+  </a>
+</div>
+{% if user.is_anonymous %}
+  {% include "admin/color_theme_toggle.html" %}
+{% endif %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

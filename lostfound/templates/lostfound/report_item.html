@@ -1,0 +1,36 @@
+{% extends 'lostfound/base.html' %}
+
+{% block title %}Report Found Item | Fynder{% endblock %}
+
+{% block content %}
+<section class="mb-4">
+  <h1 class="mb-3">Report a Found Item</h1>
+  <p class="text-body-secondary">Use this form to submit an item found on campus. Staff will review the listing before it appears publicly.</p>
+</section>
+
+<section class="card shadow-sm border-0">
+  <div class="card-body p-4">
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+      <div class="row g-3">
+        {% for field in form %}
+          <div class="col-12 {% if field.name == 'title' or field.name == 'category' or field.name == 'location_found' or field.name == 'date_found' or field.name == 'submitted_by_name' or field.name == 'submitted_by_email' or field.name == 'submitted_by_phone' %}col-md-6{% endif %}">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}
+              <div class="form-text">{{ field.help_text }}</div>
+            {% endif %}
+            {% for error in field.errors %}
+              <div class="invalid-feedback d-block">{{ error }}</div>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+      <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Submit for Review</button>
+        <a href="{% url 'found_items' %}" class="btn btn-outline-secondary">Browse current items</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

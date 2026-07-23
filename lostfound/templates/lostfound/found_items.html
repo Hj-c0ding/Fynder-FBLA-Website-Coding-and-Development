@@ -1,0 +1,72 @@
+{% extends 'lostfound/base.html' %}
+
+{% block title %}Found Items | Fynder{% endblock %}
+
+{% block content %}
+<section class="mb-4">
+  <h1 class="mb-3">Search Found Items</h1>
+  <p class="text-body-secondary">Search by keyword and category to quickly locate possible matches.</p>
+</section>
+
+<section class="card border-0 shadow-sm mb-4">
+  <div class="card-body">
+    <form method="get" class="row g-3 align-items-end" role="search" aria-label="Search found items">
+      <div class="col-md-4">
+        <label for="q" class="form-label">Search keyword</label>
+        <input type="text" class="form-control" id="q" name="q" value="{{ query }}" placeholder="Try wallet, earbuds, water bottle...">
+      </div>
+      <div class="col-md-3">
+        <label for="category" class="form-label">Category</label>
+        <select class="form-select" id="category" name="category">
+          <option value="">All categories</option>
+          {% for value, label in category_choices %}
+            <option value="{{ value }}" {% if category == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label for="date_from" class="form-label">Found from</label>
+        <input type="date" class="form-control" id="date_from" name="date_from" value="{{ date_from }}">
+      </div>
+      <div class="col-md-2">
+        <label for="date_to" class="form-label">Found to</label>
+        <input type="date" class="form-control" id="date_to" name="date_to" value="{{ date_to }}">
+      </div>
+      <div class="col-md-12 col-lg-1 d-grid">
+        <button class="btn btn-primary" type="submit" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section>
+  <div class="row g-4" id="item-grid">
+    {% for item in items %}
+      <div class="col-md-6 col-lg-4 item-entry" data-title="{{ item.title|lower }}" data-category="{{ item.category }}" data-description="{{ item.description|lower }}">
+        <article class="card h-100 shadow-sm item-card">
+          {% if item.image %}
+            <img src="{{ item.image.url }}" class="card-img-top" alt="Photo of {{ item.title }}">
+          {% else %}
+            <div class="card-img-top placeholder-img" aria-label="No photo available for {{ item.title }}">No photo</div>
+          {% endif %}
+          <div class="card-body">
+            <h2 class="h5 card-title">{{ item.title }}</h2>
+            <p class="small text-body-secondary mb-2">{{ item.get_category_display }} | {{ item.get_status_display }}</p>
+            <p class="card-text">{{ item.description|truncatechars:100 }}</p>
+            <p class="small mb-0"><strong>Found:</strong> {{ item.location_found }} on {{ item.date_found }}</p>
+          </div>
+          <div class="card-footer bg-transparent border-0 pb-3">
+            <a class="btn btn-outline-primary w-100" href="{% url 'item_detail' item.id %}">View details</a>
+          </div>
+        </article>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-warning">No items match your filters yet.</div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

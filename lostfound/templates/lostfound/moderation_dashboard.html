@@ -1,0 +1,76 @@
+{% extends 'lostfound/base.html' %}
+
+{% block title %}Staff Moderation | Fynder{% endblock %}
+
+{% block content %}
+<section class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+  <div>
+    <h1 class="mb-2">Staff Moderation Dashboard</h1>
+    <p class="text-body-secondary mb-0">Review item submissions and claim requests.</p>
+  </div>
+  <a href="/admin/" class="btn btn-outline-primary">Open Admin Dashboard</a>
+</section>
+
+<div class="row g-4">
+  <section class="col-lg-6">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header bg-transparent">
+        <h2 class="h5 mb-0">Pending Item Submissions</h2>
+      </div>
+      <div class="card-body">
+        {% for item in pending_items %}
+          <article class="border rounded-3 p-3 mb-3">
+            <h3 class="h6 mb-1">
+              <a href="{% url 'item_detail' item.id %}" class="text-decoration-none moderation-item-link">{{ item.title }}</a>
+            </h3>
+            <p class="small mb-2">{{ item.get_category_display }} | {{ item.location_found }} | {{ item.date_found }}</p>
+            <p>{{ item.description|truncatechars:120 }}</p>
+            <form method="post" action="{% url 'moderate_item' item.id %}" class="row g-2">
+              {% csrf_token %}
+              <div class="col-12">
+                <label class="form-label" for="item_notes_{{ item.id }}">Admin notes</label>
+                <textarea class="form-control" id="item_notes_{{ item.id }}" name="admin_notes" rows="2"></textarea>
+              </div>
+              <div class="col-12 d-flex flex-wrap gap-2">
+                <button class="btn btn-sm btn-success" name="action" value="approve" type="submit">Approve</button>
+                <button class="btn btn-sm btn-danger" name="action" value="reject" type="submit">Reject</button>
+                <button class="btn btn-sm btn-primary" name="action" value="claim" type="submit">Mark Claimed</button>
+              </div>
+            </form>
+          </article>
+        {% empty %}
+          <p class="mb-0">No pending item submissions.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="col-lg-6">
+    <div class="card h-100 shadow-sm border-0">
+      <div class="card-header bg-transparent">
+        <h2 class="h5 mb-0">Pending Claim Requests</h2>
+      </div>
+      <div class="card-body">
+        {% for claim in pending_claims %}
+          <article class="border rounded-3 p-3 mb-3">
+            <h3 class="h6">{{ claim.claimant_name }} for {{ claim.item.title }}</h3>
+            <p class="small mb-2">{{ claim.claimant_email }} | {{ claim.claimant_phone }}</p>
+            <p><strong>Ownership proof:</strong> {{ claim.proof_of_ownership|truncatechars:150 }}</p>
+            {% if claim.additional_message %}
+              <p class="mb-2"><strong>Message:</strong> {{ claim.additional_message|truncatechars:120 }}</p>
+            {% endif %}
+            <form method="post" action="{% url 'moderate_claim' claim.id %}" class="d-flex flex-wrap gap-2">
+              {% csrf_token %}
+              <button class="btn btn-sm btn-success" name="action" value="approve" type="submit">Approve Claim</button>
+              <button class="btn btn-sm btn-danger" name="action" value="reject" type="submit">Reject Claim</button>
+              <button class="btn btn-sm btn-secondary" name="action" value="review" type="submit">Mark Reviewed</button>
+            </form>
+          </article>
+        {% empty %}
+          <p class="mb-0">No pending claim requests.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
